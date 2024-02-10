@@ -89,7 +89,7 @@ blueprint:
         number:
           min: -1
           max: 60
-          unit_of_measurement: minuti  
+          unit_of_measurement: minutes  
       default: 5
 # If motion is detected within the delay,
 # we restart the script.
