@@ -1,4 +1,4 @@
-**MOTION ACTIVATE LIGHT EXTENTED** 
+# MOTION ACTIVATE LIGHT EXTENTED
 
 *This is an evolution of standard motion activated light.* 
 
@@ -15,4 +15,5 @@ All this options can be activated or not so you can freely combine them. For use
 * binary_sensor / motion
 * light
 * weather
+
 
