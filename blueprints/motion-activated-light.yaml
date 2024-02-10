@@ -1,8 +1,8 @@
 blueprint:
-  name: Motion-activated Light advanced
+  name: Motion-activated Light extended
   description: Turn on a light when a movement occurs
   domain: automation
-  source_url: https://https://github.com/giannisigalotti/HomeAssistant/blueprints/motion_light.yaml
+  source_url: https://github.com/giannisigalotti/HomeAssistant/blob/main/blueprints/motion-activated-light.yaml
   input:
     motion_entity:
       name: Motion sensor
