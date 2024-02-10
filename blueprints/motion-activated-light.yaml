@@ -1,0 +1,151 @@
+blueprint:
+  name: Motion-activated Light advanced
+  description: Turn on a light when a movement occurs
+  domain: automation
+  source_url: https://https://github.com/giannisigalotti/HomeAssistant/blueprints/motion_light.yaml
+  input:
+    motion_entity:
+      name: Motion sensor
+      selector:
+        entity:
+          domain: binary_sensor
+          device_class: motion
+    light_target:
+      name: Light
+      selector:
+        target:
+          entity:
+            domain: light
+    no_motion_wait:
+      name: Wait time
+      description: "The time to wait before turning off the light after no movement is detected.
+      default: 120
+      selector:
+        number:
+          min: 0
+          max: 3600
+          unit_of_measurement: seconds
+    no_sunset_handling:
+      name: Disable day/night management?
+      description: When you turn this option to off, you can define how many hour before sunset and after sunshine the automation turn on the light
+      selector:
+        boolean:
+      default: false
+    wheater_handling:
+      name: Enable meteo managment?
+      description: Does it also take weather into account to enable/disable motion sensors (use the time range only when it's sunny and disable otherwise)?
+      selector:
+        boolean:
+      default: false
+    wheater_entity:
+      name: Weather status sensor
+      description: This sensor is used only with the Meteo managment option to determine if the weather is sunny or not (useful if you are in a room usually dark in case of bad weather condition
+      selector:
+        entity:
+          domain: 
+            - weather
+          multiple: false 
+      default: "weather.home"      
+    sunset_start_hh:
+      name: Pre-sunset hours activation
+      description: How many hours before sunset does the management activate (negative numbers indicate a delay)?
+      selector:
+        number:
+          min: 0
+          max: 12
+          unit_of_measurement: hours
+      default: 0
+    sunset_start_mm:
+      name: Pre-sunset minutes activation
+      description: How many minutes before sunset does the management activate (negative numbers indicate a delay)?
+      selector:
+        number:
+          min: 0
+          max: 59
+          unit_of_measurement: minutes  
+      default: 0
+    sunrise_start_hh:
+      name: Post-sunrise hours activation
+      description: How many hours after sunrise does the management deactivate (negative numbers indicate an advance)?
+      selector:
+        number:
+          min: 0
+          max: 12
+          unit_of_measurement: hours
+      default: 0
+    sunrise_start_mm:
+      name: Post-sunrise minutes activation
+      description: How many minutes after sunrise does the management deactivate (negative numbers indicate an advance)?
+      selector:
+        number:
+          min: 0
+          max: 59
+          unit_of_measurement: minutes   
+      default: 0
+    timeout:
+      name: Deactivation timeout?
+      description: After how many minutes does the switch turn off automatically (-1 if no timeout)
+      selector:
+        number:
+          min: -1
+          max: 60
+          unit_of_measurement: minuti  
+      default: 5
+# If motion is detected within the delay,
+# we restart the script.
+mode: restart
+max_exceeded: silent
+
+trigger:
+  platform: state
+  entity_id: !input motion_entity
+  from: "off"
+  to: "on"
+variables:
+  # Make input my_input available as a script level variable
+  dusk_start_hour: !input sunset_start_hh 
+  dusk_start_minute: !input sunset_start_mm
+  rising_start_hour: !input sunrise_start_hh 
+  rising_start_minute: !input sunrise_start_mm
+  use_weather: !input wheater_handling
+  sun_rising: >  
+    {% if (states.sun.sun.state == "above_horizon") %}
+        {{ states.sun.sun.last_changed }}
+    {%- else -%}    
+        {{ states.sun.sun.attributes.next_rising }}    
+    {%- endif %}
+  sun_dusk: >
+    {% if (states.sun.sun.state == "above_horizon") %}
+        {{ states.sun.sun.next_dusk }}
+    {%- else -%}    
+        {{ states.sun.sun.last_changed }}
+    {%- endif %}    
+  no_sunny_wheater: >
+    {{ states.sensor.pirateweather_icon.state != 'sunny' and use_weather }}
+condition:
+  condition: or
+  conditions:
+      - condition: template
+        value_template: !input no_sunset_handling 
+      - condition: template
+        value_template: "{{ no_sunny_wheater }}"
+      - condition: and
+        conditions:
+          -  "{{ as_timestamp(now()) >= ((as_timestamp(sun_dusk) - dusk_start_hour*3600 - dusk_start_minute*60) )}}"
+          -  "{{ as_timestamp(now()) < ((as_timestamp(sun_rising) + rising_start_hour*3600 + rising_start_minute*60) )}}"
+action:
+  - service: light.turn_on
+    target: !input light_target
+  - wait_for_trigger:
+      platform: state
+      entity_id: !input motion_entity
+      from: "on"
+      to: "off"
+    timeout:
+      hours: 0
+      minutes: !input timeout
+      seconds: 0
+      milliseconds: 0
+  - delay: !input no_motion_wait
+  - service: light.turn_off
+    target: !input light_target
