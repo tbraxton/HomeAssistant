@@ -1,11 +1,11 @@
 blueprint:
-  name: Motion-activated Light extended
-  description: Turn on a light when a movement occurs
+  name: "Motion-activated Light extended"
+  description: "Turn on a light when a movement occurs"
   domain: automation
   source_url: https://github.com/giannisigalotti/HomeAssistant/blob/main/blueprints/motion-activated-light.yaml
   input:
     motion_entity:
-      name: Motion sensor
+      name: "Motion sensor"
       selector:
         entity:
           domain: binary_sensor
@@ -17,8 +17,8 @@ blueprint:
           entity:
             domain: light
     no_motion_wait:
-      name: Wait time
-      description: "The time to wait before turning off the light after no movement is detected.
+      name: "Wait time"
+      description: "The time to wait before turning off the light after no movement is detected."
       default: 120
       selector:
         number:
@@ -26,29 +26,29 @@ blueprint:
           max: 3600
           unit_of_measurement: seconds
     no_sunset_handling:
-      name: Disable day/night management?
-      description: When you turn this option to off, you can define how many hour before sunset and after sunshine the automation turn on the light
+      name: "Disable day/night management?"
+      description: "When you turn this option to off, you can define how many hour before sunset and after sunshine the automation turn on the light"
       selector:
         boolean:
       default: false
     wheater_handling:
-      name: Enable meteo managment?
-      description: Does it also take weather into account to enable/disable motion sensors (use the time range only when it's sunny and disable otherwise)?
+      name: "Enable meteo managment?"
+      description: "Does it also take weather into account to enable/disable motion sensors (use the time range only when it's sunny and disable otherwise)?"
       selector:
         boolean:
       default: false
     wheater_entity:
-      name: Weather status sensor
-      description: This sensor is used only with the Meteo managment option to determine if the weather is sunny or not (useful if you are in a room usually dark in case of bad weather condition
+      name: "Weather status sensor"
+      description: "This sensor is used only with the Meteo managment option to determine if the weather is sunny or not (useful if you are in a room usually dark in case of bad weather condition"
       selector:
         entity:
           domain: 
             - weather
           multiple: false 
-      default: "weather.home"      
+      default: "weather.home"
     sunset_start_hh:
-      name: Pre-sunset hours activation
-      description: How many hours before sunset does the management activate (negative numbers indicate a delay)?
+      name: "Pre-sunset hours activation"
+      description: "How many hours before sunset does the management activate (negative numbers indicate a delay)?"
       selector:
         number:
           min: 0
@@ -56,8 +56,8 @@ blueprint:
           unit_of_measurement: hours
       default: 0
     sunset_start_mm:
-      name: Pre-sunset minutes activation
-      description: How many minutes before sunset does the management activate (negative numbers indicate a delay)?
+      name: "Pre-sunset minutes activation"
+      description: "How many minutes before sunset does the management activate (negative numbers indicate a delay)?"
       selector:
         number:
           min: 0
@@ -65,8 +65,8 @@ blueprint:
           unit_of_measurement: minutes  
       default: 0
     sunrise_start_hh:
-      name: Post-sunrise hours activation
-      description: How many hours after sunrise does the management deactivate (negative numbers indicate an advance)?
+      name: "Post-sunrise hours activation"
+      description: "How many hours after sunrise does the management deactivate (negative numbers indicate an advance)?"
       selector:
         number:
           min: 0
@@ -74,8 +74,8 @@ blueprint:
           unit_of_measurement: hours
       default: 0
     sunrise_start_mm:
-      name: Post-sunrise minutes activation
-      description: How many minutes after sunrise does the management deactivate (negative numbers indicate an advance)?
+      name: "Post-sunrise minutes activation"
+      description: "How many minutes after sunrise does the management deactivate (negative numbers indicate an advance)?"
       selector:
         number:
           min: 0
@@ -83,8 +83,8 @@ blueprint:
           unit_of_measurement: minutes   
       default: 0
     timeout:
-      name: Deactivation timeout?
-      description: After how many minutes does the switch turn off automatically (-1 if no timeout)
+      name: "Deactivation timeout?"
+      description: "After how many minutes does the switch turn off automatically (-1 if no timeout)"
       selector:
         number:
           min: -1
