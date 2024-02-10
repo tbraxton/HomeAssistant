@@ -1,4 +1,4 @@
-# MOTION ACTIVATE LIGHT EXTENTED
+# MOTION ACTIVATE LIGHT EXTENDED
 
 This is blueprint for Home Assistant intended to help to create automations to turn on/off lights as a reaction of a movement sensor.
 *This is an evolution of standard motion activated light.* 
