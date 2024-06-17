@@ -120,8 +120,9 @@ variables:
     {%- else -%}    
         {{ states.sun.sun.last_changed }}
     {%- endif %}    
+  wheater_sensor: !input wheater_entity  
   no_sunny_wheater: >
-    {{ states.sensor.pirateweather_icon.state != 'sunny' and use_weather }}
+    {{ states(wheater_sensor) != 'sunny' and use_weather }}
 condition:
   condition: or
   conditions:
